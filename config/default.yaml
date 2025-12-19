@@ -33,6 +33,16 @@ doge:
       timeout: 10 # rpc request timeout (in seconds)
       # username: '' # rpc username for authentication required instances
       # password: '' # rpc password for authentication required instances
+firo:
+  type: '' # options: rpc
+  initial:
+    height: -1 # initial height of scanning
+  interval: 180 # scanning interval (in seconds)
+  rpc:
+    url: '' # rpc url
+    timeout: 10 # rpc request timeout (in seconds)
+    # username: '' # rpc username for authentication required instances
+    # password: '' # rpc password for authentication required instances
 cardano:
   type: '' # options: koios, ogmios, blockfrost
   initial:
@@ -147,6 +157,9 @@ healthCheck:
   dogeScanner:
     warnDifference: 8 # warning difference between existing and scanned blocks height
     criticalDifference: 32 # critical difference between existing and scanned blocks height
+  firoScanner:
+    warnDifference: 5 # warning difference between existing and scanned blocks height
+    criticalDifference: 20 # critical difference between existing and scanned blocks height
   ethereumScanner:
     warnDifference: 40 # warning difference between existing and scanned blocks height
     criticalDifference: 160 # critical difference between existing and scanned blocks height

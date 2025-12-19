@@ -41,6 +41,8 @@ import {
   ETHEREUM_BLOCK_TIME,
   ETHEREUM_CHAIN_NAME,
   EXPLORER_TYPE,
+  FIRO_BLOCK_TIME,
+  FIRO_CHAIN_NAME,
   NODE_TYPE,
   OGMIOS_TYPE,
 } from '../config/constants';
@@ -240,6 +242,10 @@ class HealthCheckSingleton {
           chainName = DOGE_CHAIN_NAME;
           chainBlockTime = DOGE_BLOCK_TIME;
           break;
+        case FIRO_CHAIN_NAME:
+          chainName = FIRO_CHAIN_NAME;
+          chainBlockTime = FIRO_BLOCK_TIME;
+          break;
         case ETHEREUM_CHAIN_NAME:
           chainName = ETHEREUM_CHAIN_NAME;
           chainBlockTime = ETHEREUM_BLOCK_TIME;
@@ -250,11 +256,22 @@ class HealthCheckSingleton {
           break;
       }
 
+      let warnDiff: number;
+      let criticalDiff: number;
+      
+      if (getConfig().general.networkWatcher === FIRO_CHAIN_NAME) {
+        warnDiff = getConfig().healthCheck.firoScannerWarnDiff;
+        criticalDiff = getConfig().healthCheck.firoScannerCriticalDiff;
+      } else {
+        warnDiff = getConfig().healthCheck.cardanoScannerWarnDiff;
+        criticalDiff = getConfig().healthCheck.cardanoScannerCriticalDiff;
+      }
+
       scannerSyncCheck = new ScannerSyncHealthCheckParam(
         chainName!,
         this.observingNetworkLastBlock(scanner.getObservationScanner().name()),
-        getConfig().healthCheck.cardanoScannerWarnDiff,
-        getConfig().healthCheck.cardanoScannerCriticalDiff,
+        warnDiff,
+        criticalDiff,
         chainBlockTime!
       );
     }

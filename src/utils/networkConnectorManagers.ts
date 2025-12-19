@@ -16,6 +16,10 @@ import {
   BitcoinEsploraTransaction,
 } from '@rosen-bridge/bitcoin-scanner';
 import {
+  FiroRpcTransaction,
+  FiroRpcNetwork,
+} from '@rosen-bridge/firo-rpc-scanner';
+import {
   KoiosNetwork,
   BlockFrostNetwork,
   KoiosTransaction,
@@ -40,6 +44,8 @@ const bitcoinLogger =
   CallbackLoggerFactory.getInstance().getLogger('bitcoin-connector');
 const dogeLogger =
   CallbackLoggerFactory.getInstance().getLogger('doge-connector');
+const firoLogger =
+  CallbackLoggerFactory.getInstance().getLogger('firo-connector');
 const cardanoKoiosLogger = CallbackLoggerFactory.getInstance().getLogger(
   'cardano-koios-connector'
 );
@@ -189,6 +195,36 @@ export const createDogeRpcNetworkConnectorManager = () => {
     });
   } else {
     throw new Error('Rpc configuration must be provided for Doge Rpc network');
+  }
+
+  return networkConnectorManager;
+};
+
+/**
+ * Creates and configures a NetworkConnectorManager instance for Firo RPC scanner
+ */
+export const createFiroRpcNetworkConnectorManager = () => {
+  const networkConnectorManager =
+    new NetworkConnectorManager<FiroRpcTransaction>(
+      new FailoverStrategy(),
+      firoLogger
+    );
+
+  if (config.firo.rpc) {
+    networkConnectorManager.addConnector(
+      new FiroRpcNetwork(
+        config.firo.rpc.url,
+        config.firo.rpc.timeout * 1000,
+        config.firo.rpc.username && config.firo.rpc.password
+          ? {
+              username: config.firo.rpc.username,
+              password: config.firo.rpc.password,
+            }
+          : undefined
+      )
+    );
+  } else {
+    throw new Error('Rpc configuration must be provided for Firo Rpc network');
   }
 
   return networkConnectorManager;
